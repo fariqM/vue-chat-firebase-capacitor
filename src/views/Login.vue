@@ -6,7 +6,7 @@
 					<v-card class="mx-auto px-6 py-8" max-width="344">
 						<v-form v-model="form" @submit.prevent="onSubmit">
 							<v-text-field
-								v-model="email"
+								v-model="username"
 								:readonly="loading"
 								:rules="[required]"
 								class="mb-2"
@@ -25,7 +25,6 @@
 							<br />
 
 							<v-btn
-								:disabled="!form"
 								:loading="loading"
 								block
 								color="success"
@@ -47,16 +46,18 @@
 export default {
 	data: () => ({
 		form: false,
-		email: null,
+		username: null,
 		password: null,
 		loading: false,
 	}),
 
 	methods: {
 		onSubmit() {
-			if (!this.form) return;
-			this.loading = true;
-			setTimeout(() => (this.loading = false), 2000);
+			this.$router.push({ name: "home" });
+
+			// if (!this.form) return;
+			// this.loading = true;
+			// setTimeout(() => (this.loading = false), 2000);
 		},
 		required(v) {
 			return !!v || "Field is required";

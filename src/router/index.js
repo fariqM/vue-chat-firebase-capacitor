@@ -7,7 +7,7 @@ const routes = [
     component: () => import('@/layouts/Guest.vue'),
     children: [
       {
-        path: '',
+        path: '/',
         name: 'login',
         component: () => import('@/views/Login.vue'),
       },
@@ -18,6 +18,12 @@ const routes = [
       },
     ],
   },
+
+  {
+    path:'/auth/home',
+    component: () => import('@/views/Home.vue'),
+    name:'home'
+  }
 ]
 
 const router = createRouter({

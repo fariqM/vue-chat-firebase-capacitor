@@ -1,0 +1,17 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBUE11ylgoypZgC1aEwpyb9kVGYp-yFycI",
+  authDomain: "vue-chat-mobile.firebaseapp.com",
+  projectId: "vue-chat-mobile",
+  storageBucket: "vue-chat-mobile.appspot.com",
+  messagingSenderId: "336137214179",
+  appId: "1:336137214179:web:20377f862072d5a5dc4dd6"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);

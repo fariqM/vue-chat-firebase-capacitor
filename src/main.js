@@ -13,6 +13,10 @@ import { createApp } from 'vue'
 // Plugins
 import { registerPlugins } from '@/plugins'
 
+// db
+import database from "./db"
+window.db = database;
+
 const app = createApp(App)
 
 registerPlugins(app)
