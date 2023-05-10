@@ -15,7 +15,7 @@ import { registerPlugins } from '@/plugins'
 
 // db
 import database from "./db"
-window.db = database;
+window.connect = database;
 
 const app = createApp(App)
 

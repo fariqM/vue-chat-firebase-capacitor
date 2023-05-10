@@ -15,7 +15,7 @@
 							></v-text-field>
 
 							<v-text-field
-								v-model="password"
+								v-model="name"
 								:readonly="loading"
 								:rules="[required]"
 								clearable
@@ -24,12 +24,12 @@
 							></v-text-field>
 
 							<v-text-field
-								v-model="name"
+								v-model="password"
 								:readonly="loading"
 								:rules="[required]"
 								clearable
 								label="Password"
-                type="password"
+								type="password"
 								placeholder="Enter your password"
 							></v-text-field>
 							<br />
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import { getDatabase, ref, push, set } from "firebase/database";
+
 export default {
 	data: () => ({
 		form: false,
@@ -65,7 +67,15 @@ export default {
 
 	methods: {
 		onSubmit() {
-      this.$router.push({name:'home'})
+			const database = getDatabase();
+			const instance = ref(database, "users");
+			set(push(instance), {
+				username: this.username,
+				password: this.password,
+				name: this.name,
+			});
+
+			// this.$router.push({name:'home'})
 			// if (!this.form) return;
 			// this.loading = true;
 			// setTimeout(() => (this.loading = false), 2000);
