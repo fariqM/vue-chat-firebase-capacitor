@@ -23,6 +23,11 @@ const routes = [
     path:'/auth/home',
     component: () => import('@/views/Home.vue'),
     name:'home'
+  },
+  {
+    path: '/auth/msg',
+    component: () => import('@/views/Message.vue'),
+    name:'msg.room'
   }
 ]
 

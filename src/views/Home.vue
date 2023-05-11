@@ -24,7 +24,7 @@
 					<v-row>
 						<v-col>
 							<v-card>
-								<v-list lines="two">
+								<v-list lines="two" @click="$router.push({ name: 'msg.room' })">
 									<v-list-subheader>Contact</v-list-subheader>
 									<template v-for="n in 8" :key="n">
 										<v-list-item>
@@ -32,7 +32,7 @@
 												<v-avatar color="grey-darken-1"></v-avatar>
 											</template>
 
-											<v-list-item-title>Message {{ n }}</v-list-item-title>
+											<v-list-item-title>User {{ n }}</v-list-item-title>
 
 											<v-list-item-subtitle>
 												Lorem ipsum dolor sit amet, consectetur adipisicing
@@ -52,6 +52,12 @@
 					</v-row>
 				</v-sheet>
 			</v-container>
+			<v-btn
+				icon="mdi-plus"
+				color="green"
+				style="position: fixed; bottom: 12px; right: 12px; z-index: 2000"
+				@click="dialogAdd = true"
+			></v-btn>
 
 			<v-dialog
 				v-model="dialog"
@@ -59,9 +65,6 @@
 				:scrim="false"
 				transition="dialog-bottom-transition"
 			>
-				<template v-slot:activator="{ props }">
-					<v-btn color="primary" dark v-bind="props"> Open Dialog </v-btn>
-				</template>
 				<v-card>
 					<v-toolbar
 						floating
@@ -114,24 +117,87 @@
 					</v-container>
 				</v-card>
 			</v-dialog>
+
+			<v-dialog v-model="dialogAdd">
+				<v-card>
+					<v-card-title> Add Contact </v-card-title>
+					<v-card-item>
+						<v-text-field
+							clearable
+							class="pt-2"
+							label="Username"
+							placeholder="Add contact..."
+							density="compact"
+							variant="outlined"
+						></v-text-field>
+					</v-card-item>
+
+					<v-card-actions>
+						<v-btn color="primary" block @click="showAlert('success', 'tes', 'okok')">Add</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<vue-basic-alert :duration="300" :closeIn="2000" ref="alert" />
 		</v-main>
 	</v-app>
 </template>
 
+<script setup>
+import { ref, reactive } from "vue";
+
+const links = ref([
+	["mdi-inbox-arrow-down", "Inbox"],
+	["mdi-send", "Send"],
+	["mdi-delete", "Trash"],
+	["mdi-alert-octagon", "Spam"],
+	["mdi-alert-octagon", "Spam"],
+	["mdi-alert-octagon", "Spam"],
+]);
+const cards = ref(["Today"]);
+const drawer = ref(null);
+const dialog = ref(false);
+const dialogAdd = ref(false);
+const alert = ref(null);
+
+function showAlert(type, title, msg) {
+	alert.value.showAlert(type, msg, title, {
+		iconSize: 30,
+		iconType: "solid",
+		position: "top right",
+	});
+}
+</script>
+
 <script >
-export default {
-	data: () => ({
-		cards: ["Today"],
-		drawer: null,
-		links: [
-			["mdi-inbox-arrow-down", "Inbox"],
-			["mdi-send", "Send"],
-			["mdi-delete", "Trash"],
-			["mdi-alert-octagon", "Spam"],
-			["mdi-alert-octagon", "Spam"],
-			["mdi-alert-octagon", "Spam"],
-		],
-		dialog: false,
-	}),
-};
+// export default {
+// 	data: () => ({
+// 		cards: ["Today"],
+// 		drawer: null,
+// 		links: [
+// 			["mdi-inbox-arrow-down", "Inbox"],
+// 			["mdi-send", "Send"],
+// 			["mdi-delete", "Trash"],
+// 			["mdi-alert-octagon", "Spam"],
+// 			["mdi-alert-octagon", "Spam"],
+// 			["mdi-alert-octagon", "Spam"],
+// 		],
+// 		dialog: false,
+// 		dialogAdd: false,
+// 	}),
+// 	methods: {
+// 		testalert() {
+// 			this.$refs.alert.showAlert(
+// 				"success", // There are 4 types of alert: success, info, warning, error
+// 				"This is the information of something you may know Success.", // Message of the alert
+// 				"Success 200", // Header of the alert
+// 				{
+// 					iconSize: 30, // Size of the icon (px)
+// 					iconType: "solid", // Icon styles: now only 2 styles 'solid' and 'regular'
+// 					position: "top right",
+// 				} // Position of the alert 'top right', 'top left', 'bottom left', 'bottom right'
+// 			);
+// 		},
+// 	},
+// };
 </script>
