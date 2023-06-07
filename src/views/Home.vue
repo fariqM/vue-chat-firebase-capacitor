@@ -10,7 +10,10 @@
 				></v-img>
 			</template>
 
-			<v-app-bar-title>NAMA SAYA</v-app-bar-title>
+			<v-app-bar-title>
+
+				{{ store.getCurrentUser.name }}
+			</v-app-bar-title>
 
 			<v-spacer></v-spacer>
 
@@ -144,8 +147,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from 'vue-router'
 
+// state data
+import { useStoreData } from "@/store/data";
+
+const router = useRouter()
+const store = useStoreData();
 const links = ref([
 	["mdi-inbox-arrow-down", "Inbox"],
 	["mdi-send", "Send"],
@@ -167,37 +176,13 @@ function showAlert(type, title, msg) {
 		position: "top right",
 	});
 }
-</script>
 
-<script >
-// export default {
-// 	data: () => ({
-// 		cards: ["Today"],
-// 		drawer: null,
-// 		links: [
-// 			["mdi-inbox-arrow-down", "Inbox"],
-// 			["mdi-send", "Send"],
-// 			["mdi-delete", "Trash"],
-// 			["mdi-alert-octagon", "Spam"],
-// 			["mdi-alert-octagon", "Spam"],
-// 			["mdi-alert-octagon", "Spam"],
-// 		],
-// 		dialog: false,
-// 		dialogAdd: false,
-// 	}),
-// 	methods: {
-// 		testalert() {
-// 			this.$refs.alert.showAlert(
-// 				"success", // There are 4 types of alert: success, info, warning, error
-// 				"This is the information of something you may know Success.", // Message of the alert
-// 				"Success 200", // Header of the alert
-// 				{
-// 					iconSize: 30, // Size of the icon (px)
-// 					iconType: "solid", // Icon styles: now only 2 styles 'solid' and 'regular'
-// 					position: "top right",
-// 				} // Position of the alert 'top right', 'top left', 'bottom left', 'bottom right'
-// 			);
-// 		},
-// 	},
-// };
+function getContact(){
+
+}
+
+onMounted(() => {
+	
+})
+
 </script>

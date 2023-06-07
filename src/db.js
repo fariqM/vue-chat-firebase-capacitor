@@ -11,6 +11,7 @@ const firebaseConfig = {
     databaseURL: "https://vue-chat-mobile-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
+
 const database = initializeApp(firebaseConfig);
 
 export default database;

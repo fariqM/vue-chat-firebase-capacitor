@@ -17,7 +17,6 @@ function firebaseQuery(q) {
       .then((snapshot) => {
         if (snapshot.exists()) {
           let obj = snapshot.val()
-          console.log(obj);
           obj.error = false;
           resolve(obj);
         } else {
@@ -51,9 +50,14 @@ export const useStoreData = defineStore('app', {
     },
     setCurrentUser(user) {
       this.user = user
+    },
+    getContact(){
+
     }
   },
-  getters: () => {
-
+  getters: {
+    getCurrentUser(){
+      return this.user
+    }
   }
 })

@@ -55,6 +55,7 @@
 
 <script>
 import { getDatabase, ref, push, set } from "firebase/database";
+import { getMessaging, getToken } from "firebase/messaging";
 
 export default {
 	data: () => ({
@@ -75,10 +76,10 @@ export default {
 				name: this.name,
 			});
 
-			// this.$router.push({name:'home'})
-			// if (!this.form) return;
-			// this.loading = true;
-			// setTimeout(() => (this.loading = false), 2000);
+			if (!this.form) return;
+			this.$router.push({ name: "home" });
+			this.loading = true;
+			setTimeout(() => (this.loading = false), 2000);
 		},
 		required(v) {
 			return !!v || "Field is required";

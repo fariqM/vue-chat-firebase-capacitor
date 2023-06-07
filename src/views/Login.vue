@@ -54,7 +54,7 @@ import {
 	child,
 	get,
 } from "firebase/database";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useStoreData } from "@/store/data";
 import { useRouter } from 'vue-router'
 
@@ -100,6 +100,3 @@ function required(v) {
 	return !!v || "Field is required";
 }
 </script>
-
-
-<style></style>
