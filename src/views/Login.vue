@@ -61,6 +61,7 @@ function loginAction() {
 	if (!form.value) return;
 	loading.value = true;
 	store
+		// getOneUser('users', 'username', 'fariq_m')
 		.getOneUser("users", "username", username.value)
 		.then((res) => {
 			// console.log(res);
@@ -69,6 +70,9 @@ function loginAction() {
 				alert("kredensial salah");
 				loading.value = false;
 			} else {
+				// 
+				// console.log(res);
+				// return
 				Object.keys(res).forEach((item, key) => {
 					if (key == 0) {
 						user.username = res[item].username;

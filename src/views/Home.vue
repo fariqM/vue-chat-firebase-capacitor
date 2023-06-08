@@ -24,33 +24,40 @@
 			<v-container class="py-4" fluid>
 				<v-sheet>
 					<v-row>
-						<v-col>
+						<v-col >
 							<v-card>
 								<v-list lines="two" @click="$router.push({ name: 'msg.room' })">
-									<v-list-subheader>Contact</v-list-subheader>
-									<template v-for="(contact, i) in contacts.list" :key="i">
-										<v-list-item>
-											<template v-slot:prepend>
-												<v-avatar color="grey-darken-1"></v-avatar>
-											</template>
+									<template v-if="contacts.list.length > 0">
+										<v-list-subheader>Contact</v-list-subheader>
+										<template v-for="(contact, i) in contacts.list" :key="i">
+											<v-list-item>
+												<template v-slot:prepend>
+													<v-avatar color="grey-darken-1"></v-avatar>
+												</template>
 
-											<v-list-item-title>{{
-												contact.username
-											}}</v-list-item-title>
+												<v-list-item-title>{{
+													contact.username
+												}}</v-list-item-title>
 
-											<v-list-item-subtitle>
-												{{ contact.lastMsg }}
-											</v-list-item-subtitle>
-											<template v-slot:append>
-												<v-list-item-subtitle>{{ moment(contact.time).fromNow() }}</v-list-item-subtitle>
-											</template>
-										</v-list-item>
+												<v-list-item-subtitle>
+													{{ contact.lastMsg }}
+												</v-list-item-subtitle>
+												<template v-slot:append>
+													<v-list-item-subtitle>{{
+														moment(contact.time).fromNow()
+													}}</v-list-item-subtitle>
+												</template>
+											</v-list-item>
 
-										<v-divider
-											v-if="i !== 6"
-											:key="`divider-${i}`"
-											inset
-										></v-divider>
+											<v-divider
+												v-if="i !== 6"
+												:key="`divider-${i}`"
+												inset
+											></v-divider>
+										</template>
+									</template>
+									<template v-else>
+										<v-list-subheader>No Contact</v-list-subheader>
 									</template>
 								</v-list>
 							</v-card>

@@ -43,7 +43,7 @@
 								type="submit"
 								variant="elevated"
 							>
-								Sign In
+								Register
 							</v-btn>
 						</v-form>
 					</v-card>
@@ -119,40 +119,4 @@ function required(v) {
 	return !!v || "Field is required";
 }
 </script>
-
-
-<!-- <script>
-import { getDatabase, ref, push, set } from "firebase/database";
-
-export default {
-	data: () => ({
-		form: false,
-		username: null,
-		password: null,
-		name: null,
-		loading: false,
-	}),
-
-	methods: {
-		onSubmit() {
-			this.loading = true;
-			const database = getDatabase();
-			const instance = ref(database, "users");
-			set(push(instance), {
-				username: this.username,
-				password: this.password,
-				name: this.name,
-			});
-
-			if (!this.form) return;
-			// this.$router.push({ name: "home" });
-			setTimeout(() => (this.loading = false), 2000);
-		},
-		required(v) {
-			return !!v || "Field is required";
-		},
-	},
-};
-</script> -->
-
 <style></style>
