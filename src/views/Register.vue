@@ -53,9 +53,76 @@
 	</v-container>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useStoreData } from "@/store/data";
+import { useRouter } from "vue-router";
+import { getDatabase, ref as refDB, push, set } from "firebase/database";
+
+const store = useStoreData();
+const router = useRouter();
+
+let form = ref(false);
+let username = ref("");
+let password = ref("");
+let name = ref("");
+let loading = ref(false);
+
+function onSubmit() {
+	if (!form.value) return;
+	loading.value = true;
+	const newUser = {
+		username: username.value,
+		password: password.value,
+		name: name.value,
+	};
+	store
+		.setData("users", newUser)
+		.then(() => {
+			loginAction();
+		})
+		.catch((e) => {
+			alert("error");
+			console.log(e);
+		});
+}
+
+function loginAction() {
+	store
+		.getOneUser("users", "username", username.value)
+		.then((res) => {
+			let user = {};
+			if (res == null) {
+				alert("kredensial salah");
+				loading.value = false;
+			} else {
+				Object.keys(res).forEach((item, key) => {
+					if (key == 0) {
+						user.username = res[item].username;
+						user.name = res[item].name;
+						if (res[item].password === password.value) {
+							store.setCurrentUser(user);
+							router.push({ name: "home" });
+							loading.value = false;
+						}
+					}
+				});
+			}
+		})
+		.catch((e) => {
+			alert("error");
+			console.log(e);
+		});
+}
+
+function required(v) {
+	return !!v || "Field is required";
+}
+</script>
+
+
+<!-- <script>
 import { getDatabase, ref, push, set } from "firebase/database";
-import { getMessaging, getToken } from "firebase/messaging";
 
 export default {
 	data: () => ({
@@ -68,6 +135,7 @@ export default {
 
 	methods: {
 		onSubmit() {
+			this.loading = true;
 			const database = getDatabase();
 			const instance = ref(database, "users");
 			set(push(instance), {
@@ -77,8 +145,7 @@ export default {
 			});
 
 			if (!this.form) return;
-			this.$router.push({ name: "home" });
-			this.loading = true;
+			// this.$router.push({ name: "home" });
 			setTimeout(() => (this.loading = false), 2000);
 		},
 		required(v) {
@@ -86,6 +153,6 @@ export default {
 		},
 	},
 };
-</script>
+</script> -->
 
 <style></style>

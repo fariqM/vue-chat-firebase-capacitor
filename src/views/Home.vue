@@ -11,7 +11,6 @@
 			</template>
 
 			<v-app-bar-title>
-
 				{{ store.getCurrentUser.name }}
 			</v-app-bar-title>
 
@@ -29,23 +28,27 @@
 							<v-card>
 								<v-list lines="two" @click="$router.push({ name: 'msg.room' })">
 									<v-list-subheader>Contact</v-list-subheader>
-									<template v-for="n in 8" :key="n">
+									<template v-for="(contact, i) in contacts.list" :key="i">
 										<v-list-item>
 											<template v-slot:prepend>
 												<v-avatar color="grey-darken-1"></v-avatar>
 											</template>
 
-											<v-list-item-title>User {{ n }}</v-list-item-title>
+											<v-list-item-title>{{
+												contact.username
+											}}</v-list-item-title>
 
 											<v-list-item-subtitle>
-												Lorem ipsum dolor sit amet, consectetur adipisicing
-												elit. Nihil repellendus distinctio similique
+												{{ contact.lastMsg }}
 											</v-list-item-subtitle>
+											<template v-slot:append>
+												<v-list-item-subtitle>{{ moment(contact.time).fromNow() }}</v-list-item-subtitle>
+											</template>
 										</v-list-item>
 
 										<v-divider
-											v-if="n !== 6"
-											:key="`divider-${n}`"
+											v-if="i !== 6"
+											:key="`divider-${i}`"
 											inset
 										></v-divider>
 									</template>
@@ -132,28 +135,67 @@
 							placeholder="Add contact..."
 							density="compact"
 							variant="outlined"
+							v-model="usernameQuery"
+							:error-messages="errorAddField"
 						></v-text-field>
 					</v-card-item>
 
 					<v-card-actions>
-						<v-btn color="primary" block @click="showAlert('success', 'tes', 'okok')">Add</v-btn>
+						<v-btn
+							color="primary"
+							block
+							@click="addContact(null)"
+							:loading="loadingAddBtn"
+							>Add</v-btn
+						>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<vue-basic-alert :duration="300" :closeIn="2000" ref="alert" />
 		</v-main>
+		<v-snackbar
+			v-model="snackbar.show"
+			location="top"
+			color="white"
+			:timeout="3000"
+			transition="slide-x-transition"
+			multi-line
+		>
+			<template v-slot:actions>
+				<v-btn
+					:color="snackbar.type"
+					:icon="snackbar.type == 'success' ? 'mdi-check' : 'mdi-close'"
+				></v-btn>
+			</template>
+			{{ snackbar.msg }}
+		</v-snackbar>
 	</v-app>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
+import moment from "moment";
+import {
+	getDatabase,
+	ref as refDB,
+	onValue,
+	query,
+	orderByChild,
+	equalTo,
+} from "firebase/database";
 
 // state data
 import { useStoreData } from "@/store/data";
 
-const router = useRouter()
+const snackbar = reactive({
+	msg: "",
+	show: false,
+	type: "",
+});
+
+const router = useRouter();
 const store = useStoreData();
 const links = ref([
 	["mdi-inbox-arrow-down", "Inbox"],
@@ -163,26 +205,103 @@ const links = ref([
 	["mdi-alert-octagon", "Spam"],
 	["mdi-alert-octagon", "Spam"],
 ]);
+const usernameQuery = ref("");
 const cards = ref(["Today"]);
 const drawer = ref(null);
 const dialog = ref(false);
 const dialogAdd = ref(false);
-const alert = ref(null);
+const loadingAddBtn = ref(false);
+const errorAddField = ref("");
 
-function showAlert(type, title, msg) {
-	alert.value.showAlert(type, msg, title, {
-		iconSize: 30,
-		iconType: "solid",
-		position: "top right",
+let contacts = reactive({ list: [] });
+
+onMounted(() => {
+	const db = getDatabase();
+	const dbRef = refDB(db, "/contact");
+	const q = query(
+		dbRef,
+		...[orderByChild("owner"), equalTo(store.getCurrentUser.username)]
+	);
+	onValue(q, (snapshot) => {
+		contacts.list = [];
+		snapshot.forEach((childSnapshot) => {
+			contacts.list.push(childSnapshot.val());
+		});
+	});
+});
+
+function showAlert(type, msg, show) {
+	snackbar.msg = msg;
+	snackbar.type = type;
+	snackbar.show = show;
+}
+
+function setContact() {}
+
+function checkUsername() {
+	return new Promise((resolve, reject) => {
+		errorAddField.value = "";
+		loadingAddBtn.value = true;
+		store
+			.getOneUser("users", "username", usernameQuery.value)
+			.then((res) => {
+				loadingAddBtn.value = false;
+				let user = {};
+				if (res == null) {
+					errorAddField.value = "Username not found!";
+					reject(false);
+				} else {
+					Object.keys(res).forEach((item, key) => {
+						if (res[item]?.username == usernameQuery.value) {
+							usernameQuery.value = "";
+							resolve(res[item]?.username);
+							showAlert(
+								"success",
+								"Username has been added to your contact",
+								true
+							);
+						}
+					});
+					resolve(null);
+				}
+			})
+			.catch((e) => {
+				loadingAddBtn.value = false;
+				alert("error");
+				console.log(e);
+				reject(false);
+			});
 	});
 }
 
-function getContact(){
-
+function addContact(lastMsg = null) {
+	checkUsername()
+		.then((username) => {
+			dialogAdd.value = false;
+			const time = Date.now();
+			const newContact = {
+				owner: store.getCurrentUser.username,
+				username: username,
+				time: time,
+				lastMsg: lastMsg == null ? "No Message" : lastMsg,
+			};
+			console.log(newContact);
+			store
+				.setData("contact", newContact)
+				.then((r) => {
+					console.log(r);
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+			// console.log("ok");
+		})
+		.catch((e) => {
+			// dialogAdd.value = false;
+			// usernameQuery.value = "";
+			console.log(e);
+		});
 }
 
-onMounted(() => {
-	
-})
-
+onMounted(() => {});
 </script>

@@ -9,6 +9,8 @@ import {
   equalTo,
   child,
   get,
+  set,
+  push, 
 } from "firebase/database";
 
 function firebaseQuery(q) {
@@ -27,6 +29,12 @@ function firebaseQuery(q) {
         reject({ error: true, msg: error })
       });
   })
+}
+
+function saveData(endpoint, payload) {
+  const database = getDatabase();
+  const instance = DbRef(database, endpoint);
+  return set(push(instance), payload)
 }
 
 export const useStoreData = defineStore('app', {
@@ -48,15 +56,20 @@ export const useStoreData = defineStore('app', {
         return result
       }
     },
+    async setData(endpoint, payload) {
+      let result = saveData(endpoint, payload)
+      await result;
+      return result;
+    },
     setCurrentUser(user) {
       this.user = user
     },
-    getContact(){
+    getContact() {
 
     }
   },
   getters: {
-    getCurrentUser(){
+    getCurrentUser() {
       return this.user
     }
   }

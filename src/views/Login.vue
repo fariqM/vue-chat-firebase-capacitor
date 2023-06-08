@@ -4,7 +4,7 @@
 			<v-col cols="12" sm="2">
 				<v-sheet class="bg-deep-grey pa-3" rounded>
 					<v-card class="mx-auto px-6 py-8" max-width="344">
-						<v-form v-model="form" @submit.prevent="loginAction()">
+						<v-form v-model="form" @submit.prevent="loginAction">
 							<v-text-field
 								v-model="username"
 								:readonly="loading"
@@ -44,29 +44,21 @@
 </template>
 
 <script setup>
-import {
-	getDatabase,
-	ref as DbRef,
-	query,
-	orderByKey,
-	orderByChild,
-	equalTo,
-	child,
-	get,
-} from "firebase/database";
 import { ref, onMounted } from "vue";
 import { useStoreData } from "@/store/data";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
+import useForm from "@/composable/useForm";
 
 const store = useStoreData();
-const router = useRouter()
+const router = useRouter();
 let form = ref(false);
 let username = ref(null);
 let password = ref(null);
+
 let loading = ref(false);
 
 function loginAction() {
-	if (!this.form) return;
+	if (!form.value) return;
 	loading.value = true;
 	store
 		.getOneUser("users", "username", username.value)
